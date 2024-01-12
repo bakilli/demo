@@ -4,8 +4,10 @@ import bakil.demo.database.Flight;
 import bakil.demo.database.FlightRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class DemoApplication {
 
     private final FlightRepository repository;

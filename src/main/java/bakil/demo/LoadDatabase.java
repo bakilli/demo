@@ -14,8 +14,8 @@ public class LoadDatabase {
     CommandLineRunner initDatabase(FlightRepository repository) {
         return args -> {
             repository.deleteAll();
-            repository.save(new Flight("MIA", "LAX", "2021-01-01", "2021-01-02", "100"));
-            repository.save(new Flight("MIA", "LAX", "2021-01-01", "2021-01-02", "200"));
+            repository.save(new Flight("MIA", "LAX", "2024-01-01", "2024-01-15", "100"));
+            repository.save(new Flight("MIA", "LAX", "2024-01-01", "2024-01-13", "200"));
         };
     }
 
