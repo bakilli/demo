@@ -3,14 +3,17 @@ package bakil.demo.database;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Random;
 
 @Service
 public class FlightScheduledService {
     private final FlightRepository repository;
+    private final AirportRepository airportRepository;
 
-    public FlightScheduledService(FlightRepository repository) {
+    public FlightScheduledService(FlightRepository repository, AirportRepository airportRepository) {
         this.repository = repository;
+        this.airportRepository = airportRepository;
     }
 
     @Scheduled(fixedRate = 10000)
@@ -20,11 +23,9 @@ public class FlightScheduledService {
         System.out.println("Saved flight: " + flight);
     }
 
-    private String getRandomString(int length) {
-        return new Random().ints(65, 91)
-                .limit(length)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
+    private String getRandomAirport() {
+        List<Airport> airports = airportRepository.findAll();
+        return airports.get(new Random().nextInt(airports.size())).getCity();
     }
 
     private String getRandomDate() {
@@ -35,8 +36,11 @@ public class FlightScheduledService {
 
     private Flight getRandomFlight() {
         Flight flight = new Flight();
-        flight.setOrigin(getRandomString(3));
-        flight.setDestination(getRandomString(3));
+        flight.setOrigin(getRandomAirport());
+        flight.setDestination(getRandomAirport());
+        while (flight.getOrigin().equals(flight.getDestination())) {
+            flight.setDestination(getRandomAirport());
+        }
         flight.setDepartureDate(getRandomDate());
         flight.setReturnDate(getRandomDate());
         flight.setPrice(String.valueOf(new Random().nextInt(999) + 1));

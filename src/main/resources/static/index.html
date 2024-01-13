@@ -52,39 +52,102 @@
     <button type="submit">Search Flights</button>
 </form>
 
+<h2>Create Airport</h2>
+<form id="createAirportForm">
+    <label for="airportCity"></label><input type="text" id="airportCity" placeholder="Airport City">
+    <button type="submit">Create Airport</button>
+</form>
+
+<h2>Get All Airports</h2>
+<button id="getAllAirports">Get All Airports</button>
+
+<h2>Get Airport By ID</h2>
+<form id="getAirportByIdForm">
+    <label for="getAirportById"></label><input type="text" id="getAirportById" placeholder="Airport ID">
+    <button type="submit">Get Airport By ID</button>
+</form>
+
+<h2>Update Airport</h2>
+<form id="updateAirportForm">
+    <label for="updateAirportId"></label><input type="text" id="updateAirportId" placeholder="Airport ID">
+    <label for="updateAirportCity"></label><input type="text" id="updateAirportCity" placeholder="Airport City">
+    <button type="submit">Update Airport</button>
+</form>
+
+<h2>Delete Airport</h2>
+<form id="deleteAirportForm">
+    <label for="deleteAirportId"></label><input type="text" id="deleteAirportId" placeholder="Airport ID">
+    <button type="submit">Delete Airport</button>
+</form>
+
+
 <div class="container"></div>
 
 
 <script>
-    document.getElementById('createFlightForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        createFlight();
-    });
 
-    document.getElementById('updateFlightForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        updateFlight();
-    });
+    // flight
+    {
+        document.getElementById('createFlightForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            createFlight();
+        });
 
-    document.getElementById('deleteFlightForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        deleteFlight();
-    });
+        document.getElementById('updateFlightForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            updateFlight();
+        });
 
-    document.getElementById('getAllFlights').addEventListener('click', function(event) {
-        event.preventDefault();
-        getAllFlights();
-    });
+        document.getElementById('deleteFlightForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            deleteFlight();
+        });
 
-    document.getElementById('getFlightByIdForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        getFlightById();
-    });
+        document.getElementById('getAllFlights').addEventListener('click', function (event) {
+            event.preventDefault();
+            getAllFlights();
+        });
 
-    document.getElementById('searchFlightForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        searchFlight();
-    });
+        document.getElementById('getFlightByIdForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            getFlightById();
+        });
+
+        document.getElementById('searchFlightForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            searchFlight();
+        });
+    }
+
+    // airport
+    {
+        document.getElementById('createAirportForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            createAirport();
+        });
+
+        document.getElementById('getAllAirports').addEventListener('click', function (event) {
+            event.preventDefault();
+            getAllAirports();
+        });
+
+        document.getElementById('getAirportByIdForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            getAirportById();
+        });
+
+        document.getElementById('updateAirportForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            updateAirport();
+        });
+
+        document.getElementById('deleteAirportForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            deleteAirport();
+        });
+    }
+
+    // flight
 
     function searchFlight() {
         // Fetch form data
@@ -246,6 +309,101 @@
             .then(data => console.log(data))
             .catch((error) => console.error('Error:', error));
     }
+
+    // airport
+
+    function createAirport() {
+        // Fetch form data
+        let airportCity = document.getElementById('airportCity').value;
+
+        // Send POST request
+        fetch('http://localhost:8080/airports/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                city: airportCity
+            }),
+        })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch((error) => console.error('Error:', error));
+    }
+
+    function getAllAirports() {
+        // Send GET request
+        fetch('http://localhost:8080/airports/getall')
+            .then(response => response.json())
+            .then(data => {
+                let output = '<h2>Airports</h2>';
+                data.forEach(function (airport) {
+                    output += `
+                    <ul>
+                        <li>Airport Number: ${airport.id}</li>
+                        <li>Airport City: ${airport.city}</li>
+                    </ul>
+                    `;
+                });
+                console.log(data);
+                document.querySelector('.container').innerHTML = output;
+            });
+    }
+
+    function getAirportById() {
+        // Fetch form data
+        let id = document.getElementById('getAirportById').value;
+
+        // Send GET request
+        fetch('http://localhost:8080/airports/get/' + id)
+            .then(response => response.json())
+            .then(data => {
+                let output = '<h2>Airport</h2>';
+                output += `
+                    <ul>
+                        <li>Airport Number: ${data.id}</li>
+                        <li>Airport City: ${data.city}</li>
+                    </ul>
+                    `;
+                console.log(data);
+                document.querySelector('.container').innerHTML = output;
+            })
+            .catch((error) => console.error('Error:', error));
+    }
+
+    function updateAirport() {
+        // Fetch form data
+        let id = document.getElementById('updateAirportId').value;
+        let airportCity = document.getElementById('updateAirportCity').value;
+
+        // Send PUT request
+        fetch('http://localhost:8080/airports/update/' + id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                city: airportCity
+            }),
+        })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch((error) => console.error('Error:', error));
+    }
+
+    function deleteAirport() {
+        // Fetch form data
+        let id = document.getElementById('deleteAirportId').value;
+
+        // Send DELETE request
+        fetch('http://localhost:8080/airports/delete/' + id, {
+            method: 'DELETE',
+        })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch((error) => console.error('Error:', error));
+    }
+
 </script>
 </body>
 </html>
