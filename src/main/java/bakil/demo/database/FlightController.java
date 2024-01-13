@@ -2,6 +2,7 @@ package bakil.demo.database;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,13 +32,18 @@ public class FlightController {
         return repository.save(newFlight);
     }
 
-    @GetMapping("/search")
-    List<Flight> searchFlights(@RequestParam String origin, @RequestParam String destination, @RequestParam String departureDate, @RequestParam(required = false) String returnDate) {
-        if (returnDate == null) {
-            return repository.findByOriginAndDestinationAndDepartureDate(origin, destination, departureDate);
-        } else {
-            return repository.findByOriginAndDestinationAndDepartureDateAndReturnDate(origin, destination, departureDate, returnDate);
+    @PutMapping("/search")
+    List<Flight> searchFlights(@RequestBody Flight newFlight) {
+        List<Flight> flights = new ArrayList<>();
+        for (Flight flight : repository.findAll()) {
+            if (flight.getOrigin().equals(newFlight.getOrigin()) ||
+                    flight.getDestination().equals(newFlight.getDestination()) ||
+                    flight.getDepartureDate().equals(newFlight.getDepartureDate()) ||
+                    flight.getReturnDate().equals(newFlight.getReturnDate())) {
+                flights.add(flight);
+            }
         }
+        return flights;
     }
 
     @PutMapping("/update/{id}")

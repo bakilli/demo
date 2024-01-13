@@ -15,12 +15,7 @@ public class FlightScheduledService {
 
     @Scheduled(fixedRate = 10000)
     public void requestAndSaveFlights() {
-        Flight flight = new Flight();
-        flight.setOrigin(getRandomString(3));
-        flight.setDestination(getRandomString(3));
-        flight.setDepartureDate(getRandomDate());
-        flight.setReturnDate(getRandomDate());
-        flight.setPrice(String.valueOf(new Random().nextInt(999) + 1));
+        Flight flight = getRandomFlight();
         repository.save(flight);
         System.out.println("Saved flight: " + flight);
     }
@@ -36,5 +31,15 @@ public class FlightScheduledService {
         int month = new Random().nextInt(12) + 1;
         int day = new Random().nextInt(28) + 1;
         return String.format("2024-%02d-%02d", month, day);
+    }
+
+    private Flight getRandomFlight() {
+        Flight flight = new Flight();
+        flight.setOrigin(getRandomString(3));
+        flight.setDestination(getRandomString(3));
+        flight.setDepartureDate(getRandomDate());
+        flight.setReturnDate(getRandomDate());
+        flight.setPrice(String.valueOf(new Random().nextInt(999) + 1));
+        return flight;
     }
 }

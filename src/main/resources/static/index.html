@@ -42,6 +42,16 @@
     <button type="submit">Get Flight By ID</button>
 </form>
 
+<h2>Search Flights</h2>
+<form id="searchFlightForm">
+    <label for="origin"></label><label for="originsearch"></label><input type="text" id="originsearch" placeholder="Origin">
+    <label for="destination"></label><label for="destinationsearch"></label><input type="text" id="destinationsearch" placeholder="Destination">
+    <label for="departureDate"></label><label for="departureDatesearch"></label><input type="text" id="departureDatesearch" placeholder="Departure Date">
+    <label for="returnDate"></label><label for="returnDate"></label><label for="returnDatesearch"></label><input type="text" id="returnDatesearch" placeholder="Return Date">
+    <label for="price"></label><label for="price"></label><label for="pricesearch"></label><input type="text" id="pricesearch" placeholder="Price">
+    <button type="submit">Search Flights</button>
+</form>
+
 <div class="container"></div>
 
 
@@ -71,6 +81,56 @@
         getFlightById();
     });
 
+    document.getElementById('searchFlightForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        searchFlight();
+    });
+
+    function searchFlight() {
+        // Fetch form data
+        let origin = document.getElementById('originsearch').value;
+        let destination = document.getElementById('destinationsearch').value;
+        let departureDate = document.getElementById('departureDatesearch').value;
+        let returnDate = document.getElementById('returnDatesearch').value;
+        let price = document.getElementById('pricesearch').value;
+
+
+        // Send GET AFTER THAT POST request
+        fetch('http://localhost:8080/flights/search', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                origin: origin,
+                destination: destination,
+                departureDate: departureDate,
+                returnDate: returnDate,
+                price: price
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                let output = '<h2>Flights</h2>';
+                data.forEach(function (flight) {
+                    output += `
+                    <ul>
+                        <li>Flight Number: ${flight.id}</li>
+                        <li>Departure City: ${flight.origin}</li>
+                        <li>Arrival City: ${flight.destination}</li>
+                        <li>Departure Date: ${flight.departureDate}</li>
+                        <li>Arrival Date: ${flight.returnDate}</li>>
+                        <li>Price: ${flight.price}</li>
+                    </ul>
+                    `;
+                });
+                console.log(data);
+                document.querySelector('.container').innerHTML = output;
+            })
+            .catch((error) => console.error('Error:', error));
+
+    }
+
     function getFlightById() {
         // Fetch form data
         let id = document.getElementById('getFlightById').value;
@@ -83,7 +143,7 @@
                 output += `
                     <ul>
                         <li>Flight Number: ${data.id}</li>
-                        <li>Departure City: ${data.origin}</li>
+                        <li>Origin City: ${data.origin}</li>
                         <li>Arrival City: ${data.destination}</li>
                         <li>Departure Date: ${data.departureDate}</li>
                         <li>Arrival Date: ${data.returnDate}</li>>
