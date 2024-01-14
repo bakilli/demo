@@ -11,9 +11,11 @@ import java.util.Optional;
 public class FlightController {
 
     private final FlightRepository repository;
+    private final AirportRepository airportRepository;
 
-    FlightController(FlightRepository repository) {
+    FlightController(FlightRepository repository, AirportRepository airportRepository) {
         this.repository = repository;
+        this.airportRepository = airportRepository;
     }
 
     @GetMapping("/getall")
@@ -29,6 +31,14 @@ public class FlightController {
 
     @PostMapping("/create")
     Flight newFlight(@RequestBody Flight newFlight) {
+        // if the origin airport doesn't exist, break
+        if (airportRepository.findByCity(newFlight.getOrigin()) == null) {
+            return null;
+        }
+        // if the destination airport doesn't exist, break
+        if (airportRepository.findByCity(newFlight.getDestination()) == null) {
+            return null;
+        }
         return repository.save(newFlight);
     }
 
